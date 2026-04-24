@@ -4,19 +4,18 @@ using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
 {
     [Header("Panels")]
-    public GameObject mainMenuPanel;
-    public GameObject soloPanel;
-    public GameObject coopPanel;
-    public GameObject characterSelectPanel;
-    public GameObject settingsPanel;
-    public GameObject soundPanel;
-    public GameObject videoPanel;
-    public GameObject controlsPanel;
-    public GameObject creditsPanel;
-    public GameObject pausePanel;
+    [SerializeField] private GameObject mainMenuPanel;
+    [SerializeField] private GameObject soloPanel;
+    [SerializeField] private GameObject coopPanel;
+    [SerializeField] private GameObject characterSelectPanel;
+    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject soundPanel;
+    [SerializeField] private GameObject videoPanel;
+    [SerializeField] private GameObject controlsPanel;
+    [SerializeField] private GameObject creditsPanel;
+    [SerializeField] private GameObject pausePanel;
 
     private GameObject currentPanel;
-    private GameObject previousPanel;
 
     private void Start()
     {
@@ -24,25 +23,9 @@ public class MenuManager : MonoBehaviour
         OpenPanel(mainMenuPanel);
     }
 
-    private void Update()
-    {
-        if (KeyboardBackPressed())
-        {
-            HandleBack();
-        }
-    }
-
-    private bool KeyboardBackPressed()
-    {
-        return Input.GetKeyDown(KeyCode.Escape);
-    }
-
     public void OpenPanel(GameObject panel)
     {
         if (panel == null) return;
-
-        if (currentPanel != null && currentPanel != panel)
-            previousPanel = currentPanel;
 
         CloseAllPanels();
         panel.SetActive(true);
@@ -72,11 +55,23 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void HandleBack()
+    public GameObject GetCurrentPanel()
     {
-        if (currentPanel == mainMenuPanel)
-            return;
+        return currentPanel;
+    }
 
+    public void OpenMainMenu() => OpenPanel(mainMenuPanel);
+    public void OpenSoloMenu() => OpenPanel(soloPanel);
+    public void OpenCoopMenu() => OpenPanel(coopPanel);
+    public void OpenCharacterSelect() => OpenPanel(characterSelectPanel);
+    public void OpenSettings() => OpenPanel(settingsPanel);
+    public void OpenSoundSettings() => OpenPanel(soundPanel);
+    public void OpenVideoSettings() => OpenPanel(videoPanel);
+    public void OpenControls() => OpenPanel(controlsPanel);
+    public void OpenCredits() => OpenPanel(creditsPanel);
+
+    public void BackFromSubMenu()
+    {
         if (currentPanel == soundPanel || currentPanel == videoPanel || currentPanel == controlsPanel)
         {
             OpenPanel(settingsPanel);
@@ -91,7 +86,7 @@ public class MenuManager : MonoBehaviour
 
         if (currentPanel == characterSelectPanel)
         {
-            OpenPanel(soloPanel);
+            OpenPanel(coopPanel);
             return;
         }
 
@@ -101,30 +96,10 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void BackToMainMenu()
-    {
-        OpenPanel(mainMenuPanel);
-    }
-
-    public void OpenSoloMenu() => OpenPanel(soloPanel);
-    public void OpenCoopMenu() => OpenPanel(coopPanel);
-    public void OpenCharacterSelect() => OpenPanel(characterSelectPanel);
-    public void OpenSettings() => OpenPanel(settingsPanel);
-    public void OpenSoundSettings() => OpenPanel(soundPanel);
-    public void OpenVideoSettings() => OpenPanel(videoPanel);
-    public void OpenControls() => OpenPanel(controlsPanel);
-    public void OpenCredits() => OpenPanel(creditsPanel);
-
     public void StartGame()
     {
-        Debug.Log("Start Game");
-        // SceneManager.LoadScene("GameScene");
-    }
-
-    public void QuitGame()
-    {
-        Debug.Log("Quit Game");
-        Application.Quit();
+        Debug.Log("START GAME");
+        SceneManager.LoadScene("Game");
     }
 
     public void PauseGame()
@@ -144,5 +119,10 @@ public class MenuManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         OpenPanel(mainMenuPanel);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
